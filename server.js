@@ -145,27 +145,10 @@ app.get('/api/ui-data', async (req, res) => {
                 type: row.element_type
             };
             
-            // 建立一個新的 properties 物件來存放動態屬性
-            const properties = {};
-
-            // 檢查並新增 color 屬性
-            if (row.color) {
-                properties.color = row.color;
-            }
-
-            // 檢查並新增 fontSize 屬性
-            if (row.font_size) {
-                properties.fontSize = row.font_size;
-            }
-
-            // 檢查並新增 height 屬性
-            if (row.height) {
-                properties.height = row.height;
-            }
-            
-            // 只有當 properties 物件不為空時才加入 item 中
-            if (Object.keys(properties).length > 0) {
-                item.properties = properties;
+            // 修正後的邏輯：直接將 row 中的 properties 屬性加到 item 中
+            // 這樣可以正確處理來自資料庫的 JSONB 欄位
+            if (row.properties) {
+                item.properties = row.properties;
             }
 
             if (row.label) item.label = row.label;
