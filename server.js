@@ -182,7 +182,7 @@ app.get('/api/ui-data', async (req, res) => {
                 label: current.label,
             };
             if (current.parent_value) {
-                option.city = current.parent_value;
+                option.parent_value = current.parent_value;
             }
             table.options.push(option);
             return acc;
