@@ -49,6 +49,8 @@ app.get('/api/ui-data', async (req, res) => {
             };
             
             if (row.label) item.label = row.label;
+            // 新增邏輯：將 parent_label 欄位加入回傳的物件
+            if (row.parent_label) item.parent_label = row.parent_label;
             if (row.initial_value) {
                 if (row.initial_value === 'TRUE') {
                     item.initialValue = true;
