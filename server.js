@@ -30,6 +30,8 @@ app.use(cors());
 app.get('/api/ui-data', async (req, res) => {
     try {
 
+        // 取得 product 參數，如果沒有則使用預設值 'general'
+        const product = req.query.product || 'general';
         // 同時執行所有資料庫查詢，提高效率
         // const [uiElementsResult, optionsDataResult, uiChangedResult] = await Promise.all([
         //     pool.query('SELECT * FROM testapi.ui_elements ORDER BY seq_id ASC'),
