@@ -31,11 +31,17 @@ app.get('/api/ui-data', async (req, res) => {
     try {
 
         // 同時執行所有資料庫查詢，提高效率
+        // const [uiElementsResult, optionsDataResult, uiChangedResult] = await Promise.all([
+        //     pool.query('SELECT * FROM testapi.ui_elements ORDER BY seq_id ASC'),
+        //     pool.query('SELECT * FROM testapi.options_data ORDER BY option_id ASC'),
+        //     pool.query('SELECT * FROM testapi.ui_changed ORDER BY change_id ASC')
+        // ]);
+        // 根據 product 參數篩選 ui_elements 和 ui_changed
         const [uiElementsResult, optionsDataResult, uiChangedResult] = await Promise.all([
-            pool.query('SELECT * FROM testapi.ui_elements ORDER BY seq_id ASC'),
+            pool.query('SELECT * FROM testapi.ui_elements WHERE product = $1 OR product = \'*\' ORDER BY seq_id ASC', [product]),
             pool.query('SELECT * FROM testapi.options_data ORDER BY option_id ASC'),
             pool.query('SELECT * FROM testapi.ui_changed ORDER BY change_id ASC')
-        ]);
+        ]);        
         // 處理 ui_elements 資料
         const uiDataTable = uiElementsResult.rows.map(row => {
             const item = {
@@ -59,7 +65,8 @@ app.get('/api/ui-data', async (req, res) => {
             if (row.options_key) item.options_key = row.options_key;
             if (row.properties) item.properties = row.properties;
             if (row.trigger_event) item.trigger_event = row.trigger_event;
-
+            // 新增 product 欄位
+            if (row.product) item.product = row.product;
             return item;
         });
 
@@ -80,9 +87,13 @@ app.get('/api/ui-data', async (req, res) => {
                 value: current.value,
                 label: current.label,
             };
-            if (current.parent_value) {
-                option.parent_value = current.parent_value;
-            }
+            // if (current.parent_value) {
+            //     option.parent_value = current.parent_value;
+            // }
+            // 變更邏輯：將 parent_value 變更為 product
+            if (current.product) {
+                option.product = current.product;
+            }            
             table.options.push(option);
             return acc;
         }, []);
