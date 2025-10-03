@@ -119,6 +119,8 @@ app.get('/api/ui-data', async (req, res) => {
             if (row.trigger_event) item.trigger_event = row.trigger_event;
             // 新增 product 欄位
             if (row.product) item.product = row.product;
+             // 新增 db_column_name 欄位
+            if (row.db_column_name) item.dbColumn = row.db_column_name;           
             return item;
         });
 
